@@ -1,0 +1,93 @@
+import java.util.Scanner;
+
+public class Calculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the operation: (add, subtract, multiply, divide, differentiate, integrate)");
+        String operation = scanner.nextLine();
+
+        if (operation.equalsIgnoreCase("add") || operation.equalsIgnoreCase("subtract") ||
+            operation.equalsIgnoreCase("multiply") || operation.equalsIgnoreCase("divide")) {
+            System.out.println("Enter the first number:");
+            double num1 = scanner.nextDouble();
+            System.out.println("Enter the second number:");
+            double num2 = scanner.nextDouble();
+
+            switch (operation.toLowerCase()) {
+                case "add":
+                    System.out.println("Result: " + (num1 + num2));
+                    break;
+                case "subtract":
+                    System.out.println("Result: " + (num1 - num2));
+                    break;
+                case "multiply":
+                    System.out.println("Result: " + (num1 * num2));
+                    break;
+                case "divide":
+                    System.out.println("Result: " + (num1 / num2));
+                    break;
+            }
+        } else if (operation.equalsIgnoreCase("differentiate") || operation.equalsIgnoreCase("integrate")) {
+            System.out.println("Enter the polynomial expression (ex: 3x^2 + 2x + 1):");
+            String expression = scanner.nextLine();
+            Polynomial polynomial = new Polynomial(expression);
+
+            if (operation.equalsIgnoreCase("differentiate")) {
+                System.out.println("Result: " + polynomial.differentiate());
+            } else {
+                System.out.println("Result: " + polynomial.integrate());
+            }
+        } else {
+            System.out.println("Invalid operation.");
+        }
+    }
+}
+
+class Polynomial {
+    private String expression;
+
+    public Polynomial(String expression) {
+        this.expression = expression;
+    }
+
+    public String differentiate() {
+        String[] terms = expression.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String term : terms) {
+            if (!term.equals("+") && !term.equals("-")) {
+                String[] parts = term.split("x\\^");
+                double coefficient = Double.parseDouble(parts[0]);
+                int exponent = Integer.parseInt(parts[1]);
+
+                if (exponent > 1) {
+                    result.append(coefficient * exponent).append("x^").append(exponent - 1).append(" ");
+                } else if (exponent == 1) {
+                    result.append(coefficient).append(" ");
+                }
+
+                result.append("+ ");
+            }
+        }
+
+        return result.toString().trim();
+    }
+
+    public String integrate() {
+        String[] terms = expression.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String term : terms) {
+            if (!term.equals("+") && !term.equals("-")) {
+                String[] parts = term.split("x\\^");
+                double coefficient = Double.parseDouble(parts[0]);
+                int exponent = Integer.parseInt(parts[1]);
+
+                result.append(coefficient / (exponent + 1)).append("x^").append(exponent + 1).append(" ");
+                result.append("+ ");
+            }
+        }
+
+        return result.toString().trim();
+    }
+}
